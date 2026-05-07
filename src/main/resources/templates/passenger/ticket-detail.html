@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout}">
+<body>
+<div th:fragment="content">
+    <div class="card">
+        <h1>Chi tiết vé</h1>
+        <p><strong>Mã vé:</strong> <span th:text="${ticket.ticketCode}"></span></p>
+        <p><strong>Hành khách:</strong> <span th:text="${ticket.customerName}"></span></p>
+        <p><strong>Điện thoại:</strong> <span th:text="${ticket.customerPhone}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${ticket.customerEmail}"></span></p>
+        <p><strong>Tuyến:</strong> <span th:text="${ticket.trip.route.fromLocation.name} + ' → ' + ${ticket.trip.route.toLocation.name}"></span></p>
+        <p><strong>Xe:</strong> <span th:text="${ticket.trip.bus.plateNumber}"></span></p>
+        <p><strong>Giờ khởi hành:</strong> <span th:text="${ticket.trip.departureTime}"></span></p>
+        <p><strong>Ghế:</strong> <span th:text="${ticket.seat.seatNumber}"></span></p>
+        <p><strong>Trạng thái:</strong> <span th:text="${ticket.status}"></span></p>
+        <div style="margin-top:20px;">
+            <a class="btn btn-danger" th:href="@{'/staff/tickets/cancel/' + ${ticket.id}}" sec:authorize="hasAnyRole('STAFF','ADMIN')" th:if="${ticket.status.name() != 'CANCELLED'}">Hủy vé (Staff)</a>
+            <a class="btn btn-danger" th:href="@{'/ticket/cancel/' + ${ticket.id}}" sec:authorize="hasRole('PASSENGER') and (authentication.name == ${ticket.user.username})" th:if="${ticket.status.name() != 'CANCELLED'}">Hủy vé</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

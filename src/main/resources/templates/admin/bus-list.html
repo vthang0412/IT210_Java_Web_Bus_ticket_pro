@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+
+<head>
+    <title>Quản lý xe</title>
+</head>
+
+<body>
+
+    <div th:fragment="content">
+
+    <div class="card">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h1>Quản lý xe</h1>
+
+            <a href="/admin/buses/create" class="btn btn-success">
+                Thêm xe
+            </a>
+        </div>
+
+        <br>
+
+        <table>
+            <tr>
+                <th>Biển số</th>
+                <th>Loại xe</th>
+                <th>Số ghế</th>
+                <th>Hãng xe</th>
+                <th>Tài xế</th>
+                <th>Action</th>
+            </tr>
+
+            <tr th:each="bus : ${buses}">
+                <td th:text="${bus.licensePlate}"></td>
+                <td th:text="${bus.busType}"></td>
+                <td th:text="${bus.totalSeats}"></td>
+                <td th:text="${bus.companyName}"></td>
+                <td th:text="${bus.driverName}"></td>
+
+                <td>
+                    <a th:href="@{/admin/buses/edit/{id}(id=${bus.id})}"
+                       class="btn btn-primary">Edit</a>
+
+                    <a th:href="@{/admin/buses/delete/{id}(id=${bus.id})}"
+                       class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

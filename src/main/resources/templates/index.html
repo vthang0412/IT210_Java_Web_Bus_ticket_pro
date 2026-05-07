@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Bus Ticket Pro
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/header.css}">
+
+</head>
+
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container">
+
+    <h1>
+        Tìm chuyến xe
+    </h1>
+
+    <form th:action="@{/search}"
+          method="get"
+          class="search-form">
+
+        <select name="fromId">
+
+            <option value="">
+                Điểm đi
+            </option>
+
+            <option th:each="l : ${locations}"
+                    th:value="${l.id}"
+                    th:text="${l.name}">
+            </option>
+
+        </select>
+
+        <select name="toId">
+
+            <option value="">
+                Điểm đến
+            </option>
+
+            <option th:each="l : ${locations}"
+                    th:value="${l.id}"
+                    th:text="${l.name}">
+            </option>
+
+        </select>
+
+        <button type="submit">
+            Tìm chuyến
+        </button>
+
+    </form>
+
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

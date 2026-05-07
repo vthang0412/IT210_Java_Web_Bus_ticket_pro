@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+
+<body>
+
+<div th:fragment="content">
+
+    <h1>Danh sách chuyến xe</h1>
+
+    <br>
+
+    <div
+            class="card"
+            th:each="trip : ${trips}">
+
+        <h2>
+
+            <span
+                    th:text="${trip.route.fromLocation.name}">
+            </span>
+
+            →
+
+            <span
+                    th:text="${trip.route.toLocation.name}">
+            </span>
+
+        </h2>
+
+        <br>
+
+        <p>
+
+            <b>Giờ đi:</b>
+
+            <span th:text="${trip.departureTime}">
+            </span>
+
+        </p>
+
+        <br>
+
+        <p>
+
+            <b>Giá:</b>
+
+            <span th:text="${trip.price}">
+            </span>
+
+            VNĐ
+
+        </p>
+
+        <br>
+
+        <a
+                class="btn btn-primary"
+
+                th:href=
+                        "@{'/trips/' + ${trip.id} + '/seats'}">
+
+            Chọn ghế
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

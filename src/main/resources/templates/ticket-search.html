@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+
+<body>
+
+<div th:fragment="content">
+
+    <div class="card">
+
+        <h1>Tra cứu vé</h1>
+
+        <br>
+
+        <form
+                method="post"
+                action="/ticket/search">
+
+            <label>Mã vé</label>
+
+            <input
+                    type="text"
+                    name="code">
+
+            <label>Số điện thoại</label>
+
+            <input
+                    type="text"
+                    name="phone">
+
+            <button class="btn btn-primary">
+
+                Tra cứu
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

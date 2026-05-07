@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+
+<body>
+
+<div th:fragment="content">
+
+    <h1>Tạo / Sửa user</h1>
+
+    <form method="post" th:action="@{/admin/users/save}" th:object="${user}">
+
+        <input type="hidden" th:field="*{id}" />
+
+        <label>Username</label>
+        <input type="text" th:field="*{username}" />
+
+        <label>Password (clear for create)</label>
+        <input type="password" th:field="*{password}" />
+
+        <label>Role</label>
+        <select th:field="*{role}">
+            <option value="PASSENGER">PASSENGER</option>
+            <option value="STAFF">STAFF</option>
+            <option value="ADMIN">ADMIN</option>
+        </select>
+
+        <button class="btn btn-success">Lưu</button>
+    </form>
+
+</div>
+
+</body>
+</html>

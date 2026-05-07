@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+
+<body>
+
+<div th:fragment="content">
+
+    <h1>Danh sách người dùng</h1>
+
+    <a class="btn btn-primary" th:href="@{/admin/users/create}">Tạo user</a>
+
+    <div class="card" th:each="u : ${users}">
+
+        <p>
+            <span th:text="${u.username}"></span>
+            | <span th:text="${u.role}"></span>
+        </p>
+
+        <a th:href="@{'/admin/users/edit/' + ${u.id}}">Sửa</a>
+        <a th:href="@{'/admin/users/delete/' + ${u.id}}">Xóa</a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin cá nhân</title>
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+</head>
+<body>
+<div th:fragment="content">
+    <div class="profile-container">
+        <div class="profile-card">
+            <h1>Thông tin cá nhân</h1>
+            <br>
+            <form th:action="@{/passenger/profile}" th:object="${profileRequest}" method="post">
+                <label>Tên đăng nhập</label>
+                <input type="text" th:field="*{username}" readonly>
+                <label>Họ và tên</label>
+                <input type="text" th:field="*{fullName}" placeholder="Họ tên">
+                <label>Số điện thoại</label>
+                <input type="text" th:field="*{phone}" placeholder="Số điện thoại">
+                <label>Email</label>
+                <input type="email" th:field="*{email}" placeholder="Email">
+                <label>Địa chỉ</label>
+                <input type="text" th:field="*{address}" placeholder="Địa chỉ">
+                <div class="profile-actions">
+                    <button type="submit" class="btn btn-success">Cập nhật</button>
+                    <a th:href="@{/}" class="btn btn-primary">Trang chủ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

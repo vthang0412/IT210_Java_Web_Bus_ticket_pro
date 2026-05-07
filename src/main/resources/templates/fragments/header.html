@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+
+<header th:fragment="header">
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            Bus Ticket Pro
+
+        </div>
+
+        <div class="menu">
+
+            <a th:href="@{/}">
+                Trang chủ
+            </a>
+
+            <!-- common search trips -->
+            <a th:href="@{/search}">
+                Tìm chuyến
+            </a>
+
+            <!-- passenger quick links -->
+            <a sec:authorize="hasRole('PASSENGER')" th:href="@{/ticket/search}">
+                Tra cứu vé
+            </a>
+
+            <a sec:authorize="hasRole('PASSENGER')" th:href="@{/passenger/profile}">
+                Hồ sơ
+            </a>
+
+            <!-- staff quick link -->
+            <a sec:authorize="hasAnyRole('STAFF','ADMIN')" th:href="@{/staff/tickets}">
+                Quản lý vé
+            </a>
+
+            <!-- admin quick link -->
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/buses}">
+                Quản lý xe
+            </a>
+
+            <!-- CHƯA LOGIN -->
+            <div sec:authorize="!isAuthenticated()">
+
+                <a th:href="@{/login}">
+                    Đăng nhập
+                </a>
+
+                <a th:href="@{/register}">
+                    Đăng ký
+                </a>
+
+            </div>
+
+            <!-- ĐÃ LOGIN -->
+            <div sec:authorize="isAuthenticated()"
+                 class="user-dropdown">
+
+                <button class="user-btn"
+                        onclick="toggleMenu()">
+
+                    <img th:src="@{/images/user.png}"
+                         alt="avatar">
+
+                    <span>
+
+                        Xin chào,
+
+                        <span sec:authentication="name"></span>
+
+                    </span>
+
+                </button>
+
+                <div class="dropdown-content"
+                     id="dropdownMenu">
+
+                    <a th:href="@{/logout}">
+                        Đăng xuất
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <script>
+
+        function toggleMenu() {
+
+            document
+                .getElementById("dropdownMenu")
+                .classList
+                .toggle("show-menu");
+        }
+
+        window.onclick = function (e) {
+
+            if (!e.target.closest(".user-dropdown")) {
+
+                let menu =
+                    document.getElementById("dropdownMenu");
+
+                if (menu.classList.contains("show-menu")) {
+
+                    menu.classList.remove("show-menu");
+                }
+            }
+        }
+
+    </script>
+
+</header>
+
+</body>
+</html>

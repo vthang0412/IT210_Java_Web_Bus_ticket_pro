@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+
+<body>
+
+<div th:fragment="content">
+
+    <h1>Danh sách chuyến</h1>
+
+    <a class="btn btn-primary" th:href="@{/admin/trips/create}">Tạo chuyến mới</a>
+
+    <div class="card" th:each="trip : ${trips}">
+
+        <p>
+            <span th:text="${trip.route.fromLocation.name}"></span>
+            →
+            <span th:text="${trip.route.toLocation.name}"></span>
+            | <span th:text="${trip.departureTime}"></span>
+        </p>
+
+        <a th:href="@{'/admin/trips/edit/' + ${trip.id}}">Sửa</a>
+        <a th:href="@{'/admin/trips/delete/' + ${trip.id}}">Xóa</a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+
+<body>
+
+<div th:fragment="content">
+
+    <div class="card">
+
+        <h1>Thông tin xe</h1>
+
+        <br>
+
+        <form
+                method="post"
+                action="/admin/buses/save"
+                th:object="${bus}">
+
+            <input
+                    type="hidden"
+                    th:field="*{id}">
+
+            <label>Biển số</label>
+
+            <input
+                    type="text"
+                    th:field="*{licensePlate}">
+
+            <label>Loại xe</label>
+
+            <input
+                    type="text"
+                    th:field="*{busType}">
+
+            <label>Số ghế</label>
+
+            <input
+                    type="number"
+                    th:field="*{totalSeats}">
+
+            <label>Hãng xe</label>
+
+            <input
+                    type="text"
+                    th:field="*{companyName}">
+
+            <label>Tài xế</label>
+
+            <input
+                    type="text"
+                    th:field="*{driverName}">
+
+            <button class="btn btn-success">
+
+                Lưu xe
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
