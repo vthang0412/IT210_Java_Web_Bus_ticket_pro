@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout}">
+
+<body>
+
+<div th:fragment="content">
+
+    <div class="card">
+
+        <h1>Danh sach ve cho duyet</h1>
+
+        <br>
+
+        <table>
+
+            <tr>
+                <th>Mã vé</th>
+                <th>Khách hàng</th>
+                <th>SĐT</th>
+                <th>Tuyến</th>
+                <th>Ghế</th>
+                <th>Giờ đi</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+
+            <tr th:each="ticket : ${tickets}">
+                <td th:text="${ticket.ticketCode}"></td>
+                <td th:text="${ticket.customerName}"></td>
+                <td th:text="${ticket.customerPhone}"></td>
+                <td>
+                    <span th:text="${ticket.trip.route.fromLocation.name}"></span>
+                    ->
+                    <span th:text="${ticket.trip.route.toLocation.name}"></span>
+                </td>
+                <td th:text="${ticket.seat.seatNumber}"></td>
+                <td th:text="${ticket.trip.departureTime}"></td>
+                <td th:text="${ticket.status}"></td>
+                <td style="display:flex;gap:10px;">
+                    <form method="post" th:action="@{/staff/approve/{id}(id=${ticket.id})}">
+                        <button type="submit" class="btn btn-success">Xác nhận</button>
+                    </form>
+                    <form method="post" th:action="@{/staff/cancel/{id}(id=${ticket.id})}">
+                        <button type="submit" class="btn btn-danger">Hủy vé</button>
+                    </form>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

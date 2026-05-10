@@ -1,60 +1,162 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout}">
+
+<head>
+    <style>
+
+        .error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .error-input {
+            border: 1px solid #e74c3c !important;
+            outline: none;
+        }
+
+        select.error-input {
+            border: 1px solid #e74c3c !important;
+        }
+
+        label {
+            font-weight: 500;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-card {
+            max-width: 600px;
+            margin: auto;
+        }
+        /*.btn-back {*/
+        /*    background-color: #0d6efd;*/
+        /*    color: white;*/
+        /*    padding: 8px 14px;*/
+        /*    border-radius: 4px;*/
+        /*    text-decoration: none;*/
+        /*    display: inline-block;*/
+        /*}*/
+
+        /*.btn-back:hover {*/
+        /*    background-color: #0b5ed7;*/
+        /*    color: white;*/
+        /*}*/
+    </style>
+</head>
 
 <body>
 
 <div th:fragment="content">
 
-    <div class="card">
+    <div class="card form-card">
 
         <h1>Thông tin xe</h1>
 
-        <br>
+        <form method="post"
+              th:action="@{/admin/buses/save}"
+              th:object="${bus}">
 
-        <form
-                method="post"
-                action="/admin/buses/save"
-                th:object="${bus}">
+            <input type="hidden" th:field="*{id}">
 
-            <input
-                    type="hidden"
-                    th:field="*{id}">
+            <!-- GLOBAL ERROR -->
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p class="error"
+                   th:each="err : ${#fields.globalErrors()}"
+                   th:text="${err}">
+                </p>
+            </div>
 
+            <!-- BIỂN SỐ -->
             <label>Biển số</label>
+            <input type="text"
+                   th:field="*{licensePlate}"
+                   placeholder="VD: 29A-12345"
+                   th:classappend="${#fields.hasErrors('licensePlate')} ? 'error-input'">
 
-            <input
-                    type="text"
-                    th:field="*{licensePlate}">
+            <p class="error"
+               th:if="${#fields.hasErrors('licensePlate')}"
+               th:errors="*{licensePlate}"></p>
 
+            <!-- LOẠI XE -->
             <label>Loại xe</label>
+            <select th:field="*{busType}"
+                    th:classappend="${#fields.hasErrors('busType')} ? 'error-input'">
 
-            <input
-                    type="text"
-                    th:field="*{busType}">
+                <option value="">-- Chọn loại xe --</option>
+                <option value="Sleeper">Xe giường nằm</option>
+                <option value="Limousine">Limousine</option>
+                <option value="Seating">Xe ghế ngồi</option>
 
+            </select>
+
+            <p class="error"
+               th:if="${#fields.hasErrors('busType')}"
+               th:errors="*{busType}"></p>
+
+            <!-- SỐ GHẾ -->
             <label>Số ghế</label>
+            <select th:field="*{totalSeats}"
+                    th:classappend="${#fields.hasErrors('totalSeats')} ? 'error-input'">
 
-            <input
-                    type="number"
-                    th:field="*{totalSeats}">
+                <option value="">-- Chọn số ghế --</option>
+                <option value="16">16</option>
+                <option value="24">24</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="45">45</option>
+                <option value="50">50</option>
 
+            </select>
+
+            <p class="error"
+               th:if="${#fields.hasErrors('totalSeats')}"
+               th:errors="*{totalSeats}"></p>
+
+            <!-- HÃNG XE -->
             <label>Hãng xe</label>
+            <input type="text"
+                   th:field="*{companyName}"
+                   placeholder="FUTA / Thành Bưởi..."
+                   th:classappend="${#fields.hasErrors('companyName')} ? 'error-input'">
 
-            <input
-                    type="text"
-                    th:field="*{companyName}">
+            <p class="error"
+               th:if="${#fields.hasErrors('companyName')}"
+               th:errors="*{companyName}"></p>
 
+            <!-- TÀI XẾ -->
             <label>Tài xế</label>
+            <input type="text"
+                   th:field="*{driverName}"
+                   placeholder="Tên tài xế"
+                   th:classappend="${#fields.hasErrors('driverName')} ? 'error-input'">
 
-            <input
-                    type="text"
-                    th:field="*{driverName}">
+            <p class="error"
+               th:if="${#fields.hasErrors('driverName')}"
+               th:errors="*{driverName}"></p>
 
-            <button class="btn btn-success">
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
 
-                Lưu xe
+                <button type="submit" class="btn btn-success">
+                    Lưu xe
+                </button>
 
-            </button>
+                <button type="button"
+                        class="btn btn-back" style="background: blue"
+                        onclick="window.location.href='/admin/buses'">
+                    Quay lại
+                </button>
+
+            </div>
 
         </form>
 

@@ -1,18 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout}">
+
 <body>
+
 <div th:fragment="content">
-    <div class="card">
+
+    <div class="card form-card">
+
         <h1>Tra cứu vé</h1>
-        <br>
-        <form method="post" action="/ticket/search">
+
+        <form method="post"
+              th:action="@{/ticket/search}"
+              th:object="${ticketSearchRequest}">
+
+            <p class="error"
+               th:if="${#fields.hasGlobalErrors()}"
+               th:each="err : ${#fields.globalErrors()}"
+               th:text="${err}">
+            </p>
+
             <label>Mã vé</label>
-            <input type="text" name="code">
+            <input type="text"
+                   th:field="*{code}"
+                   th:classappend="${#fields.hasErrors('code')} ? 'error-input'">
+            <p class="error"
+               th:if="${#fields.hasErrors('code')}"
+               th:errors="*{code}"></p>
+
             <label>Số điện thoại</label>
-            <input type="text" name="phone">
-            <button class="btn btn-primary">Tra cứu</button>
+            <input type="text"
+                   th:field="*{phone}"
+                   th:classappend="${#fields.hasErrors('phone')} ? 'error-input'">
+            <p class="error"
+               th:if="${#fields.hasErrors('phone')}"
+               th:errors="*{phone}"></p>
+
+            <button class="btn btn-primary">
+                Tra cứu
+            </button>
+
         </form>
+
     </div>
+
 </div>
+
 </body>
 </html>

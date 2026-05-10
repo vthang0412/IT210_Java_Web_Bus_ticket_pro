@@ -1,25 +1,89 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout}">
 
 <body>
 
 <div th:fragment="content">
 
-    <h1>Danh sách chuyến</h1>
+    <div class="card">
 
-    <a class="btn btn-primary" th:href="@{/admin/trips/create}">Tạo chuyến mới</a>
+        <div class="top-bar">
 
-    <div class="card" th:each="trip : ${trips}">
+            <h1>Danh sách chuyến</h1>
 
-        <p>
-            <span th:text="${trip.route.fromLocation.name}"></span>
-            →
-            <span th:text="${trip.route.toLocation.name}"></span>
-            | <span th:text="${trip.departureTime}"></span>
-        </p>
+            <a class="btn btn-success"
+               th:href="@{/admin/trips/create}">
 
-        <a th:href="@{'/admin/trips/edit/' + ${trip.id}}">Sửa</a>
-        <a th:href="@{'/admin/trips/delete/' + ${trip.id}}">Xóa</a>
+                Tạo chuyến
+
+            </a>
+
+        </div>
+
+        <table>
+
+            <tr>
+
+                <th>Tuyến</th>
+                <th>Xe</th>
+                <th>Giờ đi</th>
+                <th>Giá vé</th>
+                <th>Action</th>
+
+            </tr>
+
+            <tr th:each="trip : ${trips}">
+
+                <td>
+
+                    <span th:text=
+                                  "${trip.route.fromLocation.name}">
+                    </span>
+
+                    →
+
+                    <span th:text=
+                                  "${trip.route.toLocation.name}">
+                    </span>
+
+                </td>
+
+                <td th:text=
+                            "${trip.bus.licensePlate}">
+                </td>
+
+                <td th:text=
+                            "${trip.departureTime}">
+                </td>
+
+                <td th:text=
+                            "${trip.price}">
+                </td>
+
+                <td>
+
+                    <a class="btn btn-primary"
+                       th:href=
+                               "@{'/admin/trips/edit/' + ${trip.id}}">
+
+                        Sửa
+
+                    </a>
+
+                    <form method="post"
+                          th:action="@{'/admin/trips/delete/' + ${trip.id}}"
+                          style="display:inline;">
+                        <button type="submit" class="btn btn-danger">
+                            Xóa
+                        </button>
+                    </form>
+
+                </td>
+
+            </tr>
+
+        </table>
 
     </div>
 

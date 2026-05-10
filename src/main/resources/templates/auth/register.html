@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout}">
+
+<div th:fragment="content">
+
+    <div class="auth-container">
+
+        <div class="auth-card">
+
+            <div class="auth-left">
+                <h1>Bus Ticket Pro</h1>
+                <p>Đăng ký tài khoản để đặt vé</p>
+                <img th:src="@{/images/bus.png}">
+            </div>
+
+            <div class="auth-right">
+
+                <h2>Đăng ký</h2>
+
+                <form method="post"
+                      th:action="@{/register}"
+                      th:object="${registerRequest}">
+
+                    <p class="error" th:if="${#fields.hasGlobalErrors()}"
+                       th:each="err : ${#fields.globalErrors()}"
+                       th:text="${err}"></p>
+
+                    <input th:field="*{username}"
+                           placeholder="Username">
+
+                    <p class="error" th:if="${#fields.hasErrors('username')}"
+                       th:errors="*{username}"></p>
+
+                    <input type="password"
+                           th:field="*{password}"
+                           placeholder="Password">
+
+                    <p class="error" th:if="${#fields.hasErrors('password')}"
+                       th:errors="*{password}"></p>
+
+                    <input type="password"
+                           th:field="*{confirmPassword}"
+                           placeholder="Confirm Password">
+
+                    <p class="error" th:if="${#fields.hasErrors('confirmPassword')}"
+                       th:errors="*{confirmPassword}"></p>
+
+                    <button type="submit">
+                        Đăng ký
+                    </button>
+
+                </form>
+
+                <div class="auth-link">
+                    Đã có tài khoản?
+                    <a th:href="@{/login}">Đăng nhập</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

@@ -1,12 +1,16 @@
 package com.bus.controller;
 
+import com.bus.dto.TripRequest;
 import com.bus.entity.Trip;
 import com.bus.repository.BusRepository;
 import com.bus.repository.RouteRepository;
 import com.bus.repository.TripRepository;
+import com.bus.service.TripService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -17,48 +21,57 @@ public class AdminTripController {
     private final TripRepository tripRepository;
     private final RouteRepository routeRepository;
     private final BusRepository busRepository;
+    private final TripService tripService;
 
     @GetMapping
-    public String list(Model model){
-
+    public String list(Model model) {
         model.addAttribute("trips", tripRepository.findAll());
-
         return "admin/trip-list";
     }
 
     @GetMapping("/create")
-    public String create(Model model){
-
-        model.addAttribute("trip", new Trip());
+    public String create(Model model) {
+        model.addAttribute("trip", new TripRequest());
         model.addAttribute("routes", routeRepository.findAll());
         model.addAttribute("buses", busRepository.findAll());
-
         return "admin/trip-form";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Trip trip){
+    public String save(@Valid @ModelAttribute("trip") TripRequest request,
+                       BindingResult result,
+                       Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("routes", routeRepository.findAll());
+            model.addAttribute("buses", busRepository.findAll());
+            return "admin/trip-form";
+        }
 
-        tripRepository.save(trip);
-
+        tripService.save(request);
         return "redirect:/admin/trips";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Long id, Model model){
+    public String edit(@PathVariable Long id, Model model) {
+        Trip trip = tripRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Trip not found"));
 
-        model.addAttribute("trip", tripRepository.findById(id).orElseThrow());
+        TripRequest request = new TripRequest();
+        request.setId(trip.getId());
+        request.setRouteId(trip.getRoute().getId());
+        request.setBusId(trip.getBus().getId());
+        request.setDepartureTime(trip.getDepartureTime());
+        request.setPrice(trip.getPrice());
+
+        model.addAttribute("trip", request);
         model.addAttribute("routes", routeRepository.findAll());
         model.addAttribute("buses", busRepository.findAll());
-
         return "admin/trip-form";
     }
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id){
-
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable Long id) {
         tripRepository.deleteById(id);
-
         return "redirect:/admin/trips";
     }
 }

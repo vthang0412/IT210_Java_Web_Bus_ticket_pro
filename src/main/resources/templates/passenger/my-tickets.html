@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: layout}">
+
+<body>
+
+<div th:fragment="content">
+
+    <style>
+
+        .ticket-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:24px;
+        }
+
+        .ticket-table{
+            width:100%;
+            border-collapse:collapse;
+            overflow:hidden;
+            border-radius:10px;
+        }
+
+        .ticket-table th{
+
+            background:#2563eb;
+            color:white;
+
+            padding:16px;
+
+            text-align:left;
+
+            font-size:15px;
+        }
+
+        .ticket-table td{
+
+            padding:18px 16px;
+
+            border-bottom:1px solid #e5e7eb;
+
+            vertical-align:middle;
+        }
+
+        .ticket-table tr:hover{
+            background:#f8fafc;
+        }
+
+        .route-text{
+            font-weight:700;
+            color:#1e293b;
+        }
+
+        .action-cell{
+            min-width:180px;
+        }
+
+        .status{
+
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+
+            padding:7px 14px;
+
+            border-radius:999px;
+
+            font-size:13px;
+
+            font-weight:800;
+        }
+
+        .status.pending{
+            background:#fef3c7;
+            color:#b45309;
+        }
+
+        .status.booked{
+            background:#dcfce7;
+            color:#166534;
+        }
+
+        .status.cancelled{
+            background:#fee2e2;
+            color:#dc2626;
+        }
+
+        .empty-box{
+
+            text-align:center;
+
+            padding:40px 20px;
+
+            color:#6b7280;
+
+            font-size:17px;
+        }
+
+    </style>
+
+    <div class="card">
+
+        <div class="ticket-header">
+
+            <h1>Vé của tôi</h1>
+
+            <a class="btn btn-primary"
+               th:href="@{/ticket/search}">
+
+                Tra cứu vé
+
+            </a>
+
+        </div>
+
+        <table class="ticket-table">
+
+            <tr>
+
+                <th>Mã vé</th>
+
+                <th>Tuyến</th>
+
+                <th>Ghế</th>
+
+                <th>Giờ khởi hành</th>
+
+                <th>Trạng thái</th>
+
+                <th>Hành động</th>
+
+            </tr>
+
+            <tr th:each="ticket : ${tickets}">
+
+                <td th:text="${ticket.ticketCode}"></td>
+
+                <td class="route-text">
+
+                    <span th:text="${ticket.trip.route.fromLocation.name}"></span>
+
+                    →
+
+                    <span th:text="${ticket.trip.route.toLocation.name}"></span>
+
+                </td>
+
+                <td>
+
+                    Ghế
+                    <span th:text="${ticket.seat.seatNumber}"></span>
+
+                </td>
+
+                <td>
+
+                    <span th:text="${#temporals.format(ticket.trip.departureTime,'dd/MM/yyyy HH:mm')}"></span>
+
+                </td>
+
+                <td>
+
+                    <span
+                            th:if="${ticket.status.name() == 'PENDING'}"
+                            class="status pending">
+
+                        PENDDING
+
+                    </span>
+
+                    <span
+                            th:if="${ticket.status.name() == 'BOOKED'}"
+                            class="status booked">
+
+                        PAID
+
+                    </span>
+
+                    <span
+                            th:if="${ticket.status.name() == 'CANCELLED'}"
+                            class="status cancelled">
+
+                        CANCELLED
+
+                    </span>
+
+                </td>
+
+                <td class="action-cell">
+
+                    <!-- nút hủy -->
+                    <form method="post"
+                          th:if="${ticket.status.name() != 'CANCELLED'}"
+                          th:action="@{/ticket/cancel/{id}(id=${ticket.id})}">
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            Hủy vé
+
+                        </button>
+
+                    </form>
+
+                    <!-- đã hủy -->
+                    <span th:if="${ticket.status.name() == 'CANCELLED'}"
+                          class="status cancelled">
+
+                        Vé đã hủy
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+        <div class="empty-box"
+             th:if="${#lists.isEmpty(tickets)}">
+
+            Bạn chưa có vé nào.
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,124 +1,94 @@
 package com.bus.controller;
 
-import com.bus.entity.Seat;
-import com.bus.entity.Ticket;
-import com.bus.entity.SeatStatus;
-import com.bus.entity.TicketStatus;
-import com.bus.repository.SeatRepository;
+import com.bus.dto.TicketSearchRequest;
 import com.bus.repository.TicketRepository;
-import jakarta.transaction.Transactional;
+import com.bus.service.BookingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
 public class TicketController {
 
     private final TicketRepository ticketRepository;
-    private final SeatRepository seatRepository;
+
+    private final BookingService bookingService;
 
     @GetMapping("/ticket/search")
-    public String searchPage(){
+    public String searchPage(Model model) {
 
-                return "passenger/ticket-search";
+        model.addAttribute("ticketSearchRequest", new TicketSearchRequest());
+        return "passenger/ticket-search";
     }
 
     @PostMapping("/ticket/search")
-    public String searchTicket(
+    public String search(
 
-            @RequestParam String code,
-            @RequestParam String phone
-    ){
+            @Valid @ModelAttribute("ticketSearchRequest") TicketSearchRequest request,
 
-        Ticket ticket =
-                ticketRepository
-                        .findByTicketCodeAndCustomerPhone(
-                                code,
-                                phone
-                        )
-                        .orElse(null);
+            BindingResult result,
+            Model model
 
-        if(ticket == null){
-            return "redirect:/ticket/search";
+    ) {
+        if (result.hasErrors()) {
+            return "passenger/ticket-search";
         }
 
-        return "redirect:/ticket/detail/"
-                + ticket.getId();
+        ticketRepository.searchTicket(request.getCode(), request.getPhone())
+                .ifPresentOrElse(
+                        ticket -> model.addAttribute("ticket", ticket),
+                        () -> result.reject("ticket.notFound", "Không tìm thấy vé với mã và số điện thoại đã nhập")
+                );
+
+        if (result.hasErrors()) {
+            return "passenger/ticket-search";
+        }
+
+        return "passenger/ticket-detail";
     }
 
-    @GetMapping("/ticket/detail/{id}")
-    public String ticketDetail(
+    @GetMapping("/my-tickets")
+    public String myTickets(
 
-            @PathVariable Long id,
+            Authentication authentication,
+
             Model model
-    ){
+
+    ) {
 
         model.addAttribute(
-                "ticket",
-                ticketRepository.findById(id).orElseThrow()
+
+                "tickets",
+
+                ticketRepository.findByUserUsername(
+                        authentication.getName()
+                )
         );
 
-                return "passenger/ticket-detail";
+        return "passenger/my-tickets";
     }
 
-    @GetMapping("/ticket/cancel/{id}")
-    @Transactional
-    public String cancelTicket(
+    @PostMapping("/ticket/cancel/{id}")
+    public String cancel(
 
             @PathVariable Long id,
-            org.springframework.security.core.Authentication authentication
-    ){
 
-        Ticket ticket =
-                ticketRepository.findById(id)
-                        .orElseThrow();
+            Authentication authentication
 
-        // Only allow staff/admin or ticket owner to cancel
-        // (owner recorded in ticket.user)
-        // If not authorized, redirect to detail
+    ) {
 
-        LocalDateTime departure =
-                ticket.getTrip().getDepartureTime();
+        bookingService.cancelTicket(
 
-        long hours =
-                Duration.between(
-                        LocalDateTime.now(),
-                        departure
-                ).toHours();
+                id,
 
+                authentication.getName()
+        );
 
-                // authorization: staff/admin can cancel any; passengers can cancel only their own ticket
-                boolean isStaffOrAdmin = authentication != null && authentication.getAuthorities().stream()
-                                .anyMatch(a -> a.getAuthority().equals("ROLE_STAFF") || a.getAuthority().equals("ROLE_ADMIN"));
-
-                boolean isOwner = false;
-                if(authentication != null && ticket.getUser() != null){
-                        isOwner = authentication.getName().equals(ticket.getUser().getUsername());
-                }
-
-                if(!isStaffOrAdmin && !isOwner){
-                        return "redirect:/ticket/detail/" + id;
-                }
-
-                if(hours < 12 && !isStaffOrAdmin){
-                        // only staff/admin can cancel within 12h
-                        return "redirect:/ticket/detail/" + id;
-                }
-
-        ticket.setStatus(TicketStatus.CANCELLED);
-
-        Seat seat = ticket.getSeat();
-
-        seat.setStatus(SeatStatus.AVAILABLE);
-
-        seatRepository.save(seat);
-        ticketRepository.save(ticket);
-
-        return "redirect:/ticket/detail/" + id;
+        return "redirect:/my-tickets";
     }
 }

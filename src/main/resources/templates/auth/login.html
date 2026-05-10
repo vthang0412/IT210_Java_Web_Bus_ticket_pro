@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout}">
+
+<div th:fragment="content">
+
+    <div class="auth-container">
+
+        <div class="auth-card">
+
+            <div class="auth-left">
+                <h1>Bus Ticket Pro</h1>
+                <p>Đặt vé nhanh chóng - an toàn - tiện lợi</p>
+                <img th:src="@{/images/bus.png}" alt="">
+            </div>
+
+            <div class="auth-right">
+
+                <h2>Đăng nhập</h2>
+                <form method="post"
+                      th:action="@{/login}"
+                      th:object="${loginRequest}">
+
+                    <input type="text"
+                           th:field="*{username}"
+                           placeholder="Username">
+
+                    <p th:if="${#fields.hasErrors('username')}"
+                       th:errors="*{username}"
+                       style="color:red;"></p>
+
+                    <input type="password"
+                           th:field="*{password}"
+                           placeholder="Password">
+
+                    <p th:if="${#fields.hasErrors('password')}"
+                       th:errors="*{password}"
+                       style="color:red;"></p>
+
+                    <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+                    <button type="submit">Đăng nhập</button>
+                </form>
+
+                <div class="auth-link">
+                    Chưa có tài khoản?
+                    <a th:href="@{/register}">Đăng ký</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

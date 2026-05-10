@@ -1,25 +1,245 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:replace="~{layout :: layout}">
+
 <body>
+
 <div th:fragment="content">
-    <div class="card">
-        <h1>Chi tiết vé</h1>
-        <p><strong>Mã vé:</strong> <span th:text="${ticket.ticketCode}"></span></p>
-        <p><strong>Hành khách:</strong> <span th:text="${ticket.customerName}"></span></p>
-        <p><strong>Điện thoại:</strong> <span th:text="${ticket.customerPhone}"></span></p>
-        <p><strong>Email:</strong> <span th:text="${ticket.customerEmail}"></span></p>
-        <p><strong>Tuyến:</strong> <span th:text="${ticket.trip.route.fromLocation.name} + ' → ' + ${ticket.trip.route.toLocation.name}"></span></p>
-        <p><strong>Xe:</strong> <span th:text="${ticket.trip.bus.plateNumber}"></span></p>
-        <p><strong>Giờ khởi hành:</strong> <span th:text="${ticket.trip.departureTime}"></span></p>
-        <p><strong>Ghế:</strong> <span th:text="${ticket.seat.seatNumber}"></span></p>
-        <p><strong>Trạng thái:</strong> <span th:text="${ticket.status}"></span></p>
-        <div style="margin-top:20px;">
-            <a class="btn btn-danger" th:href="@{'/staff/tickets/cancel/' + ${ticket.id}}" sec:authorize="hasAnyRole('STAFF','ADMIN')" th:if="${ticket.status.name() != 'CANCELLED'}">Hủy vé (Staff)</a>
-            <a class="btn btn-danger" th:href="@{'/ticket/cancel/' + ${ticket.id}}" sec:authorize="hasRole('PASSENGER') and (authentication.name == ${ticket.user.username})" th:if="${ticket.status.name() != 'CANCELLED'}">Hủy vé</a>
+
+    <style>
+
+        body {
+            background: #f4f6fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .ticket-wrapper {
+            width: 95%;
+            margin: 30px auto;
+        }
+
+        .ticket-card {
+
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 35px 40px;
+
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .ticket-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 35px;
+        }
+
+        .ticket-header h1 {
+
+            font-size: 48px;
+
+            color: #001b4e;
+
+            font-weight: 700;
+
+            margin: 0;
+        }
+
+        .btn-back {
+
+            background: #3264e3;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 14px 28px;
+
+            border-radius: 12px;
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background: #1f4fc9;
+        }
+
+        .ticket-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            overflow: hidden;
+
+            border-radius: 14px;
+        }
+
+        .ticket-table thead {
+
+            background: #3264e3;
+
+            color: white;
+        }
+
+        .ticket-table th {
+
+            padding: 18px;
+
+            text-align: left;
+
+            font-size: 20px;
+        }
+
+        .ticket-table td {
+
+            padding: 20px 18px;
+
+            border-bottom: 1px solid #ececec;
+
+            font-size: 18px;
+
+            color: #333;
+        }
+
+        .ticket-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status {
+
+            display: inline-block;
+
+            background: #dff5e4;
+
+            color: #1f8a3d;
+
+            padding: 8px 16px;
+
+            border-radius: 30px;
+
+            font-size: 15px;
+
+            font-weight: 600;
+        }
+
+        .info-title {
+
+            font-weight: bold;
+
+            color: #001b4e;
+
+            width: 220px;
+        }
+
+    </style>
+
+    <div class="ticket-wrapper">
+
+        <div class="ticket-card">
+
+            <div class="ticket-header">
+
+                <h1>Chi tiết vé</h1>
+
+                <a
+                   th:href="@{/my-tickets}"
+                   class="btn-back">
+                    Vé của tôi
+                </a>
+
+            </div>
+
+            <table class="ticket-table">
+
+                <thead>
+                <tr>
+                    <th>Thông tin</th>
+                    <th>Chi tiết</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr>
+                    <td class="info-title">Mã vé</td>
+                    <td th:text="${ticket.ticketCode}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Khách hàng</td>
+                    <td th:text="${ticket.customerName}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Số điện thoại</td>
+                    <td th:text="${ticket.customerPhone}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Email</td>
+                    <td th:text="${ticket.customerEmail}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Ghế</td>
+                    <td th:text="${ticket.seat.seatNumber}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Xe</td>
+                    <td th:text="${ticket.trip.bus.licensePlate + ' - ' + ticket.trip.bus.busType}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Tài xế</td>
+                    <td th:text="${ticket.trip.bus.driverName}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Tuyến</td>
+                    <td th:text="${ticket.trip.route.fromLocation.name + ' -> ' + ticket.trip.route.toLocation.name}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Giờ khởi hành</td>
+                    <td th:text="${#temporals.format(ticket.trip.departureTime, 'dd/MM/yyyy HH:mm')}"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Tổng tiền</td>
+                    <td th:text="${#numbers.formatDecimal(ticket.trip.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                </tr>
+
+                <tr>
+                    <td class="info-title">Trạng thái</td>
+
+                    <td>
+                        <span class="status"
+                              th:text="${ticket.status}">
+                        </span>
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
+
     </div>
+
 </div>
+
 </body>
 </html>

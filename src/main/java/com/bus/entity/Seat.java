@@ -5,6 +5,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "seats")
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,16 +14,14 @@ import lombok.*;
 public class Seat {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "trip_id")
-    private Trip trip;
-
-    @Column(name = "seat_number")
     private String seatNumber;
 
     @Enumerated(EnumType.STRING)
     private SeatStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
 }

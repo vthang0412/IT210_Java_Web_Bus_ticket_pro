@@ -1,28 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:replace="~{layout :: layout}">
+
 <body>
+
 <div th:fragment="content">
-    <div class="card">
-        <h1>Đặt vé xe</h1>
-        <br>
-        <div sec:authorize="hasAnyRole('PASSENGER','STAFF')">
-            <form method="post" action="/booking">
-                <input type="hidden" name="seatId" th:value="${seatId}">
-                <label>Họ tên</label>
-                <input type="text" name="customerName">
-                <label>Số điện thoại</label>
-                <input type="text" name="customerPhone">
-                <label>Email</label>
-                <input type="email" name="customerEmail">
-                <button class="btn btn-success">Xác nhận đặt vé</button>
-            </form>
-        </div>
-        <div sec:authorize="!hasAnyRole('PASSENGER','STAFF')">
-            <p>Bạn không có quyền đặt vé. Vui lòng đăng nhập bằng tài khoản hành khách.</p>
-        </div>
+
+    <div class="card form-card">
+
+        <h1>Đặt vé</h1>
+
+        <form method="post"
+              th:action="@{/booking}"
+              th:object="${bookingRequest}">
+
+            <input type="hidden" th:field="*{seatIds}">
+
+            <input type="hidden"
+                   th:field="*{tripId}">
+
+            <label>Họ tên</label>
+            <input type="text"
+                   th:field="*{customerName}">
+
+            <label>Số điện thoại</label>
+            <input type="text"
+                   th:field="*{customerPhone}">
+
+            <label>Email</label>
+            <input type="email"
+                   th:field="*{customerEmail}">
+
+            <button type="submit" class="btn btn-success">
+                Đặt vé
+            </button>
+
+        </form>
+
     </div>
+
 </div>
+
 </body>
 </html>

@@ -9,76 +9,85 @@
     <nav class="navbar">
 
         <div class="logo">
-
-            Bus Ticket Pro
-
+            <a th:href="@{/}">Bus Ticket Pro</a>
         </div>
 
         <div class="menu">
 
-            <a th:href="@{/}">
-                Trang chủ
+            <a th:href="@{/}">Trang chủ</a>
+
+            <a sec:authorize="hasRole('PASSENGER')"
+               th:href="@{/}">
+                Đặt vé
             </a>
 
-            <!-- common search trips -->
-            <a th:href="@{/search}">
-                Tìm chuyến
+            <a sec:authorize="hasRole('PASSENGER')"
+               th:href="@{/my-tickets}">
+                Vé của tôi
             </a>
 
-            <!-- passenger quick links -->
-            <a sec:authorize="hasRole('PASSENGER')" th:href="@{/ticket/search}">
+            <a sec:authorize="hasRole('PASSENGER')"
+               th:href="@{/ticket/search}">
                 Tra cứu vé
             </a>
 
-            <a sec:authorize="hasRole('PASSENGER')" th:href="@{/passenger/profile}">
-                Hồ sơ
+            <a sec:authorize="hasAnyRole('STAFF','ADMIN')"
+               th:href="@{/staff/tickets}">
+                Duyệt vé
             </a>
 
-            <!-- staff quick link -->
-            <a sec:authorize="hasAnyRole('STAFF','ADMIN')" th:href="@{/staff/tickets}">
-                Quản lý vé
-            </a>
-
-            <!-- admin quick link -->
-            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/buses}">
+            <a sec:authorize="hasRole('ADMIN')"
+               th:href="@{/admin/buses}">
                 Quản lý xe
             </a>
 
-            <!-- CHƯA LOGIN -->
+            <a sec:authorize="hasRole('ADMIN')"
+               th:href="@{/admin/trips}">
+                Quản lý chuyến
+            </a>
+
             <div sec:authorize="!isAuthenticated()">
-
-                <a th:href="@{/login}">
-                    Đăng nhập
-                </a>
-
-                <a th:href="@{/register}">
-                    Đăng ký
-                </a>
-
+                <a th:href="@{/login}">Đăng nhập</a>
+                <a th:href="@{/register}">Đăng ký</a>
             </div>
 
-            <!-- ĐÃ LOGIN -->
             <div sec:authorize="isAuthenticated()"
                  class="user-dropdown">
 
-                <button class="user-btn"
+                <button type="button"
+                        class="user-btn"
                         onclick="toggleMenu()">
 
-                    <img th:src="@{/images/user.png}"
-                         alt="avatar">
+                    <span class="avatar-icon">U</span>
 
                     <span>
-
                         Xin chào,
-
                         <span sec:authentication="name"></span>
-
                     </span>
 
                 </button>
 
-                <div class="dropdown-content"
-                     id="dropdownMenu">
+                <div id="dropdownMenu"
+                     class="dropdown-content">
+
+                    <a th:href="@{/profile}">
+                        Hồ sơ
+                    </a>
+
+                    <a th:href="@{/my-tickets}"
+                       sec:authorize="hasRole('PASSENGER')">
+                        Vé của tôi
+                    </a>
+
+                    <a th:href="@{/admin/buses}"
+                       sec:authorize="hasRole('ADMIN')">
+                        Trang admin
+                    </a>
+
+                    <a th:href="@{/staff/tickets}"
+                       sec:authorize="hasRole('STAFF')">
+                        Trang staff
+                    </a>
 
                     <a th:href="@{/logout}">
                         Đăng xuất
@@ -91,32 +100,6 @@
         </div>
 
     </nav>
-
-    <script>
-
-        function toggleMenu() {
-
-            document
-                .getElementById("dropdownMenu")
-                .classList
-                .toggle("show-menu");
-        }
-
-        window.onclick = function (e) {
-
-            if (!e.target.closest(".user-dropdown")) {
-
-                let menu =
-                    document.getElementById("dropdownMenu");
-
-                if (menu.classList.contains("show-menu")) {
-
-                    menu.classList.remove("show-menu");
-                }
-            }
-        }
-
-    </script>
 
 </header>
 

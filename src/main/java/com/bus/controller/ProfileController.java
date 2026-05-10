@@ -1,53 +1,71 @@
 package com.bus.controller;
 
-import com.bus.dto.ProfileRequest;
-import com.bus.entity.User;
-import com.bus.repository.UserRepository;
+import com.bus.dto.ProfileUpdateRequest;
+import com.bus.entity.UserProfile;
 import com.bus.service.ProfileService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/passenger")
+@RequestMapping("/profile")
 public class ProfileController {
 
-    private final UserRepository userRepository;
     private final ProfileService profileService;
 
-    @GetMapping("/profile")
-    public String profilePage(Authentication authentication, Model model) {
+    @GetMapping
+    public String profile(
 
-        User user = userRepository.findByUsername(authentication.getName())
-                .orElseThrow();
+            Authentication authentication,
 
-        ProfileRequest request = new ProfileRequest();
+            Model model
 
-        // luôn set username
-        request.setUsername(user.getUsername());
+    ) {
 
-        // nếu chưa có profile → tạo dữ liệu rỗng để tránh null
-        if (user.getProfile() != null) {
-            request.setFullName(user.getProfile().getFullName());
-            request.setPhone(user.getProfile().getPhone());
-            request.setEmail(user.getProfile().getEmail());
-            request.setAddress(user.getProfile().getAddress());
-        }
+        UserProfile profile = profileService.getProfile(authentication.getName());
 
-        model.addAttribute("profileRequest", request);
+        ProfileUpdateRequest request = new ProfileUpdateRequest();
+        request.setFullName(profile.getFullName());
+        request.setPhone(profile.getPhone());
+        request.setEmail(profile.getEmail());
+        request.setAddress(profile.getAddress());
 
-        return "passenger/profile";
+        model.addAttribute("username", profile.getUser().getUsername());
+        model.addAttribute("profileUpdateRequest", request);
+
+        return "profile/profile";
     }
 
-    @PostMapping("/profile")
-    public String updateProfile(@ModelAttribute ProfileRequest request,
-                                Authentication authentication) {
+    @PostMapping("/update")
+    public String update(
 
-        profileService.updateProfile(authentication.getName(), request);
+            @Valid @ModelAttribute("profileUpdateRequest")
+            ProfileUpdateRequest request,
 
-        return "redirect:/passenger/profile";
+            BindingResult result,
+
+            Authentication authentication,
+
+            Model model
+
+    ) {
+        if (result.hasErrors()) {
+            model.addAttribute("username", authentication.getName());
+            return "profile/profile";
+        }
+
+        profileService.updateProfile(
+
+                authentication.getName(),
+
+                request
+        );
+
+        return "redirect:/";
     }
 }

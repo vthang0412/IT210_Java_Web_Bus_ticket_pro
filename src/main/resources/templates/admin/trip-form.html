@@ -1,34 +1,131 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout}">
+
+<head>
+    <style>
+
+        .error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .error-input {
+            border: 1px solid #e74c3c !important;
+            outline: none;
+        }
+
+        label {
+            font-weight: 500;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-card {
+            max-width: 600px;
+            margin: auto;
+        }
+
+    </style>
+</head>
 
 <body>
 
 <div th:fragment="content">
 
-    <h1>Tạo / Sửa chuyến</h1>
+    <div class="card form-card">
 
-    <form method="post" th:action="@{/admin/trips/save}" th:object="${trip}">
+        <h1>Tạo / Cập nhật chuyến xe</h1>
 
-        <input type="hidden" th:field="*{id}" />
+        <form method="post"
+              th:action="@{/admin/trips/save}"
+              th:object="${trip}">
 
-        <label>Route</label>
-        <select th:field="*{route}" th:object="${trip}">
-            <option th:each="r : ${routes}" th:value="${r}" th:text="${r.fromLocation.name} + ' → ' + ${r.toLocation.name}"></option>
-        </select>
+            <input type="hidden" th:field="*{id}">
 
-        <label>Bus</label>
-        <select th:field="*{bus}" th:object="${trip}">
-            <option th:each="b : ${buses}" th:value="${b}" th:text="${b.plateNumber}"></option>
-        </select>
+            <!-- ROUTE -->
+            <label>Tuyến đường</label>
+            <select th:field="*{routeId}"
+                    th:classappend="${#fields.hasErrors('routeId')} ? 'error-input'">
 
-        <label>Departure Time</label>
-        <input type="datetime-local" th:field="*{departureTime}" />
+                <option value="">-- Chọn tuyến --</option>
 
-        <label>Price</label>
-        <input type="number" th:field="*{price}" />
+                <option th:each="r : ${routes}"
+                        th:value="${r.id}"
+                        th:text="${r.fromLocation.name + ' → ' + r.toLocation.name}">
+                </option>
 
-        <button class="btn btn-success">Lưu</button>
-    </form>
+            </select>
+
+            <p class="error"
+               th:if="${#fields.hasErrors('routeId')}"
+               th:errors="*{routeId}"></p>
+
+            <!-- BUS -->
+            <label>Xe</label>
+            <select th:field="*{busId}"
+                    th:classappend="${#fields.hasErrors('busId')} ? 'error-input'">
+
+                <option value="">-- Chọn xe --</option>
+
+                <option th:each="b : ${buses}"
+                        th:value="${b.id}"
+                        th:text="${b.licensePlate}">
+                </option>
+
+            </select>
+
+            <p class="error"
+               th:if="${#fields.hasErrors('busId')}"
+               th:errors="*{busId}"></p>
+
+            <!-- DEPARTURE TIME -->
+            <label>Giờ khởi hành</label>
+            <input type="datetime-local"
+                   th:field="*{departureTime}"
+                   th:classappend="${#fields.hasErrors('departureTime')} ? 'error-input'">
+
+            <p class="error"
+               th:if="${#fields.hasErrors('departureTime')}"
+               th:errors="*{departureTime}"></p>
+
+            <!-- PRICE -->
+            <label>Giá vé</label>
+            <input type="number"
+                   step="0.01"
+                   th:field="*{price}"
+                   th:classappend="${#fields.hasErrors('price')} ? 'error-input'">
+
+            <p class="error"
+               th:if="${#fields.hasErrors('price')}"
+               th:errors="*{price}"></p>
+
+            <!-- BUTTONS -->
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+
+                <button type="submit" class="btn btn-success">
+                    Lưu chuyến
+                </button>
+
+                <a class="btn btn-primary"
+                   th:href="@{/admin/trips}">
+                    Quay lại
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 

@@ -1,28 +1,37 @@
 package com.bus.repository;
 
 import com.bus.entity.Seat;
-import com.bus.entity.SeatStatus;
 import jakarta.persistence.LockModeType;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-@Repository
 public interface SeatRepository
-        extends JpaRepository<Seat, Long> {
+        extends JpaRepository<Seat,Long> {
 
     List<Seat> findByTripId(Long tripId);
 
+    List<Seat> findByTripIdOrderByIdAsc(Long tripId);
+
+    boolean existsByTripId(Long tripId);
+
+    @Query("select coalesce(max(s.id), 0) from Seat s")
+    Long findMaxId();
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+
     @Query("""
-            SELECT s
-            FROM Seat s
-            WHERE s.id = :id
+
+            select s
+
+            from Seat s
+
+            where s.id = :id
+
             """)
-    Optional<Seat> findByIdForUpdate(Long id);
-    List<Seat> findByTrip_Id(Long tripId);
+    Optional<Seat> lockSeat(
+
+            @Param("id") Long id
+    );
 }
