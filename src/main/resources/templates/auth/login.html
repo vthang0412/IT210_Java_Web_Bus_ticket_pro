@@ -20,12 +20,7 @@
 
                 <h2>Đăng nhập</h2>
 
-                  <!-- SPRING SECURITY ERROR -->
-                  <p th:if="${param.error}"
-                     style="color:red; font-weight:bold;">
-                      Sai tài khoản hoặc mật khẩu
-                  </p>
-
+                  <!-- GLOBAL / LOGOUT MESSAGES -->
                   <p th:if="${param.logout}"
                      style="color:green;">
                       Đăng xuất thành công
@@ -33,20 +28,22 @@
 
                   <!-- FORM -->
                   <form method="post"
-                     th:action="@{/do-login}"
-                     onsubmit="return validateLogin()">
+                     th:action="@{/login}"
+                     th:object="${loginRequest}">
 
                       <input type="text"
-                          name="username"
+                          th:field="*{username}"
                           placeholder="Username">
 
-                      <p id="userError" class="error"></p>
+                      <p class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
 
                       <input type="password"
-                          name="password"
+                          th:field="*{password}"
                           placeholder="Password">
 
-                      <p id="passError" class="error"></p>
+                      <p class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+
+                      <p class="error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err.defaultMessage}"></p>
 
                       <button type="submit">Đăng nhập</button>
                   </form>
@@ -73,33 +70,6 @@
     }
 </style>
 
-<!-- JS VALIDATE -->
-<script>
-    function validateLogin() {
-
-        const username = document.querySelector('input[name="username"]');
-        const password = document.querySelector('input[name="password"]');
-
-        const userError = document.getElementById("userError");
-        const passError = document.getElementById("passError");
-
-        let ok = true;
-
-        userError.innerText = "";
-        passError.innerText = "";
-
-        if (username.value.trim() === "") {
-            userError.innerText = "Bạn chưa nhập username";
-            ok = false;
-        }
-
-        if (password.value.trim() === "") {
-            passError.innerText = "Bạn chưa nhập password";
-            ok = false;
-        }
-
-        return ok;
-    }
-</script>
+<!-- no client-side JS validation; server-side messages displayed above -->
 
 </html>
