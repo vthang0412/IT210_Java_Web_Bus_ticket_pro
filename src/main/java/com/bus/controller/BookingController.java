@@ -19,7 +19,7 @@ public class BookingController {
     public String bookingForm(
             @RequestParam String seatIds,
             @RequestParam Long tripId,
-            BookingRequest request
+            @ModelAttribute("bookingRequest") BookingRequest request
     ) {
 
         request.setTripId(tripId);

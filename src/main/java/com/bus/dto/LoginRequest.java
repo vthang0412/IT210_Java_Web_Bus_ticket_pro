@@ -11,14 +11,14 @@ public class LoginRequest {
 
     @NotBlank(message = "Username không được để trống")
     @Pattern(
-            regexp = "\\S+",
+            regexp = "^\\S+$",
             message = "Username không được chứa khoảng trắng"
     )
     private String username;
 
     @NotBlank(message = "Password không được để trống")
     @Pattern(
-            regexp = "\\S+",
+            regexp = "^\\S+$",
             message = "Password không được chứa khoảng trắng"
     )
     private String password;

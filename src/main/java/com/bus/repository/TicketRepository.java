@@ -18,7 +18,7 @@ public interface TicketRepository
     List<Ticket> findByUserUsername(
             String username
     );
-
+    boolean existsByTripId(Long tripId);
     @Query("""
 
             select t

@@ -24,8 +24,13 @@ public class SearchTripRequest {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate departureDate;
 
-    @AssertTrue(message = "Điểm đi và điểm đến không được trùng nhau")
-    public boolean isDifferentRoute() {
-        return fromId == null || toId == null || !fromId.equals(toId);
-    }
+//    @AssertTrue(message = "Điểm đi và điểm đến không được trùng nhau")
+//    public boolean isValidRoute() {
+//
+//        if (fromId == null || toId == null) {
+//            return true;
+//        }
+//
+//        return !fromId.equals(toId);
+//    }
 }

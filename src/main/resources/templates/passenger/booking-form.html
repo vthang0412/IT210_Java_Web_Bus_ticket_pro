@@ -20,16 +20,37 @@
                    th:field="*{tripId}">
 
             <label>Họ tên</label>
+
             <input type="text"
                    th:field="*{customerName}">
 
+            <div class="error"
+                 th:if="${#fields.hasErrors('customerName')}"
+                 th:errors="*{customerName}">
+            </div>
+
+
             <label>Số điện thoại</label>
+
             <input type="text"
                    th:field="*{customerPhone}">
 
+            <div class="error"
+                 th:if="${#fields.hasErrors('customerPhone')}"
+                 th:errors="*{customerPhone}">
+            </div>
+
+
             <label>Email</label>
+
             <input type="email"
                    th:field="*{customerEmail}">
+
+            <div class="error"
+                 th:if="${#fields.hasErrors('customerEmail')}"
+                 th:errors="*{customerEmail}">
+            </div>
+
 
             <button type="submit" class="btn btn-success">
                 Đặt vé

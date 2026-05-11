@@ -38,29 +38,45 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/search", "/login", "/register",
-                                "/css/**", "/js/**", "/images/**")
-                        .permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/search",
+                                "/login",
+                                "/register",
+                                "/do-login",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        ).permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN")
-                        .requestMatchers("/booking/**",
+                        .requestMatchers(
+                                "/booking/**",
                                 "/seat-map/**",
                                 "/seats/**",
                                 "/ticket/**",
-                                "/my-tickets/**")
-                        .hasRole("PASSENGER")
+                                "/my-tickets/**"
+                        ).hasRole("PASSENGER")
 
                         .anyRequest().authenticated()
                 )
 
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .loginProcessingUrl("/do-login") 
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .successHandler(customLoginSuccessHandler)
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
 
-                .logout(logout -> logout.logoutSuccessUrl("/login"));
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                );
 
         return http.build();
     }

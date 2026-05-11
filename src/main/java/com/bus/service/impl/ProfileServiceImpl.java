@@ -22,7 +22,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         User user = userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Không tim thấy người dùng"));
 
         return profileRepository
                 .findByUser(user)

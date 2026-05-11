@@ -9,93 +9,93 @@
 
     <style>
 
-        .ticket-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:24px;
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
         }
 
-        .ticket-table{
-            width:100%;
-            border-collapse:collapse;
-            overflow:hidden;
-            border-radius:10px;
+        .ticket-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 10px;
         }
 
-        .ticket-table th{
+        .ticket-table th {
 
-            background:#2563eb;
-            color:white;
+            background: #2563eb;
+            color: white;
 
-            padding:16px;
+            padding: 16px;
 
-            text-align:left;
+            text-align: left;
 
-            font-size:15px;
+            font-size: 15px;
         }
 
-        .ticket-table td{
+        .ticket-table td {
 
-            padding:18px 16px;
+            padding: 18px 16px;
 
-            border-bottom:1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
 
-            vertical-align:middle;
+            vertical-align: middle;
         }
 
-        .ticket-table tr:hover{
-            background:#f8fafc;
+        .ticket-table tr:hover {
+            background: #f8fafc;
         }
 
-        .route-text{
-            font-weight:700;
-            color:#1e293b;
+        .route-text {
+            font-weight: 700;
+            color: #1e293b;
         }
 
-        .action-cell{
-            min-width:180px;
+        .action-cell {
+            min-width: 180px;
         }
 
-        .status{
+        .status {
 
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
 
-            padding:7px 14px;
+            padding: 7px 14px;
 
-            border-radius:999px;
+            border-radius: 999px;
 
-            font-size:13px;
+            font-size: 13px;
 
-            font-weight:800;
+            font-weight: 800;
         }
 
-        .status.pending{
-            background:#fef3c7;
-            color:#b45309;
+        .status.pending {
+            background: #fef3c7;
+            color: #b45309;
         }
 
-        .status.booked{
-            background:#dcfce7;
-            color:#166534;
+        .status.booked {
+            background: #dcfce7;
+            color: #166534;
         }
 
-        .status.cancelled{
-            background:#fee2e2;
-            color:#dc2626;
+        .status.cancelled {
+            background: #fee2e2;
+            color: #dc2626;
         }
 
-        .empty-box{
+        .empty-box {
 
-            text-align:center;
+            text-align: center;
 
-            padding:40px 20px;
+            padding: 40px 20px;
 
-            color:#6b7280;
+            color: #6b7280;
 
-            font-size:17px;
+            font-size: 17px;
         }
 
     </style>
@@ -166,12 +166,12 @@
                             th:if="${ticket.status.name() == 'PENDING'}"
                             class="status pending">
 
-                        PENDDING
+                        PENDING
 
                     </span>
 
                     <span
-                            th:if="${ticket.status.name() == 'BOOKED'}"
+                            th:if="${ticket.status.name() == 'PAID'}"
                             class="status booked">
 
                         PAID
@@ -196,7 +196,8 @@
                           th:action="@{/ticket/cancel/{id}(id=${ticket.id})}">
 
                         <button type="submit"
-                                class="btn btn-danger">
+                                class="btn btn-danger"
+                                onclick="return confirm('Bạn có chắc muốn hủy vé?')">
 
                             Hủy vé
 
@@ -206,7 +207,8 @@
 
                     <!-- đã hủy -->
                     <span th:if="${ticket.status.name() == 'CANCELLED'}"
-                          class="status cancelled">
+                          class="status cancelled"
+                    >
 
                         Vé đã hủy
 

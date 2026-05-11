@@ -34,6 +34,10 @@ public class BookingRequest {
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ")
+//    @Pattern(
+//            regexp = "^[A-Za-z0-9+_.-]+@gmail\\.com$",
+//            message = "Chỉ chấp nhận Gmail"
+//    )
     @Size(max = 100, message = "Email tối đa 100 ký tự")
     private String customerEmail;
 }

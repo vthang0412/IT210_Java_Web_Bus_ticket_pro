@@ -27,11 +27,11 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void register(RegisterRequest request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new IllegalArgumentException("Password confirmation does not match");
+            throw new IllegalArgumentException("Xác nhận mật khẩu không khớp");
         }
 
         userRepository.findByUsername(request.getUsername()).ifPresent(user -> {
-            throw new IllegalArgumentException("Username already exists");
+            throw new IllegalArgumentException("Tên người dùng đã tồn tại");
         });
 
         User user = User.builder()

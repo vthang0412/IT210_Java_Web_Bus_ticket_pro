@@ -26,16 +26,16 @@ public class TripService {
         Trip trip = request.getId() == null
                 ? new Trip()
                 : tripRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Trip not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến đi"));
 
         if (request.getId() == null) {
             trip.setId(tripRepository.findMaxId() + 1);
         }
 
         trip.setRoute(routeRepository.findById(request.getRouteId())
-                .orElseThrow(() -> new RuntimeException("Route not found")));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến đường")));
         trip.setBus(busRepository.findById(request.getBusId())
-                .orElseThrow(() -> new RuntimeException("Bus not found")));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy xe buýt")));
         trip.setDepartureTime(request.getDepartureTime());
         trip.setPrice(request.getPrice());
 

@@ -1,7 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout}">
+<style>
+    /* ALERT MESSAGE */
 
+    .alert{
+        padding:14px 18px;
+        margin:18px 0;
+        border-radius:12px;
+        font-size:15px;
+        font-weight:600;
+        display:flex;
+        align-items:center;
+        gap:10px;
+        animation:fadeIn 0.3s ease;
+    }
+
+    /* ERROR */
+
+    .alert-danger{
+        background:#fef2f2;
+        color:#dc2626;
+        border:1px solid #fecaca;
+        box-shadow:0 4px 12px rgba(220,38,38,0.08);
+    }
+
+    /* SUCCESS */
+
+    .alert-success{
+        background:#f0fdf4;
+        color:#16a34a;
+        border:1px solid #bbf7d0;
+        box-shadow:0 4px 12px rgba(22,163,74,0.08);
+    }
+
+    /* ANIMATION */
+
+    @keyframes fadeIn{
+        from{
+            opacity:0;
+            transform:translateY(-5px);
+        }
+        to{
+            opacity:1;
+            transform:translateY(0);
+        }
+    }
+</style>
 <body>
 
 <div th:fragment="content">
@@ -19,6 +64,16 @@
 
             </a>
 
+        </div>
+
+        <!-- MESSAGE -->
+
+        <div th:if="${error}" class="alert alert-danger">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success">
+            <span th:text="${success}"></span>
         </div>
 
         <table>
@@ -74,9 +129,15 @@
                     <form method="post"
                           th:action="@{'/admin/trips/delete/' + ${trip.id}}"
                           style="display:inline;">
-                        <button type="submit" class="btn btn-danger">
+
+                        <button type="submit"
+                                class="btn btn-danger"
+                                onclick="return confirm('Bạn có chắc muốn xóa chuyến này?')">
+
                             Xóa
+
                         </button>
+
                     </form>
 
                 </td>

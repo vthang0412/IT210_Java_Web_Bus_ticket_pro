@@ -32,36 +32,36 @@ public class BookingServiceImpl implements BookingService {
     ) {
 
         if (seatIds == null || seatIds.isEmpty()) {
-            throw new RuntimeException("No seats selected");
+            throw new RuntimeException("Chưa chọn chỗ ngồi nào");
         }
 
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() ->
-                        new RuntimeException("Trip not found"));
+                        new RuntimeException("Không tìm thấy chuyến đi"));
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                        new RuntimeException("Không tìm thấy user"));
 
         for (Long seatId : seatIds) {
 
             Seat seat = seatRepository.lockSeat(seatId)
                     .orElseThrow(() ->
-                            new RuntimeException("Seat not found"));
+                            new RuntimeException("Không tìm thấy chỗ ngồi"));
 
             if (seat.getStatus() != SeatStatus.AVAILABLE) {
 
                 throw new RuntimeException(
-                        "Seat " + seat.getSeatNumber()
-                                + " is not available"
+                        "Ghế " + seat.getSeatNumber()
+                                + " không có sẵn"
                 );
             }
 
             if (!seat.getTrip().getId().equals(trip.getId())) {
 
                 throw new RuntimeException(
-                        "Seat " + seat.getSeatNumber()
-                                + " does not belong to this trip"
+                        "Ghế " + seat.getSeatNumber()
+                                + " không thuộc về chuyến đi này"
                 );
             }
 
@@ -103,17 +103,29 @@ public class BookingServiceImpl implements BookingService {
 
         Ticket ticket = ticketRepository.lockTicket(ticketId)
                 .orElseThrow(() ->
-                        new RuntimeException("Ticket not found"));
+                        new RuntimeException("Không tìm thấy vé"));
 
         if (!ticket.getUser()
                 .getUsername()
                 .equals(username)) {
 
-            throw new RuntimeException("Forbidden");
+            throw new RuntimeException(
+                    "Bạn không có quyền hủy vé này"
+            );
         }
 
         if (ticket.getStatus() == TicketStatus.CANCELLED) {
-            return;
+
+            throw new RuntimeException(
+                    "Vé đã bị hủy trước đó"
+            );
+        }
+
+        if (ticket.getStatus() == TicketStatus.PAID) {
+
+            throw new RuntimeException(
+                    "Không thể hủy vé đã thanh toán"
+            );
         }
 
         if (
@@ -124,7 +136,7 @@ public class BookingServiceImpl implements BookingService {
         ) {
 
             throw new RuntimeException(
-                    "Ticket can only be cancelled at least 12 hours before departure"
+                    "Vé chỉ có thể bị hủy ít nhất 12 giờ trước giờ khởi hành"
             );
         }
 

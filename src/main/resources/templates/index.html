@@ -168,65 +168,96 @@
     <div class="search-page">
 
         <section class="search-panel">
-            <div class="search-panel__title">Tìm chuyến xe</div>
+
+            <div class="search-panel__title">
+                Tìm chuyến xe
+            </div>
 
             <form class="search-form"
                   th:action="@{/search}"
                   th:object="${searchRequest}"
-                  method="get">
+                  method="post">
 
+                <!-- GLOBAL ERROR -->
                 <div class="global-error"
-                     th:if="${#fields.hasGlobalErrors()}"
-                     th:each="err : ${#fields.globalErrors()}"
-                     th:text="${err}">
+                     th:if="${#fields.hasGlobalErrors()}">
+
+                    <div th:each="err : ${#fields.globalErrors()}"
+                         th:text="${err.defaultMessage}">
+                    </div>
+
                 </div>
 
+                <!-- FROM -->
                 <div class="field">
+
                     <label>Điểm đi</label>
+
                     <select th:field="*{fromId}"
                             th:classappend="${#fields.hasErrors('fromId')} ? 'error-input'">
+
                         <option value="">Chọn điểm đi</option>
+
                         <option th:each="l : ${locations}"
                                 th:value="${l.id}"
                                 th:text="${l.name}">
                         </option>
+
                     </select>
+
                     <div class="form-error"
                          th:if="${#fields.hasErrors('fromId')}"
-                         th:errors="*{fromId}">
+                         th:text="${#fields.errors('fromId')[0]}">
                     </div>
+
                 </div>
 
+                <!-- TO -->
                 <div class="field">
+
                     <label>Điểm đến</label>
+
                     <select th:field="*{toId}"
                             th:classappend="${#fields.hasErrors('toId')} ? 'error-input'">
+
                         <option value="">Chọn điểm đến</option>
+
                         <option th:each="l : ${locations}"
                                 th:value="${l.id}"
                                 th:text="${l.name}">
                         </option>
+
                     </select>
+
                     <div class="form-error"
                          th:if="${#fields.hasErrors('toId')}"
-                         th:errors="*{toId}">
+                         th:text="${#fields.errors('toId')[0]}">
                     </div>
+
                 </div>
 
+                <!-- DATE -->
                 <div class="field">
+
                     <label>Ngày đi</label>
+
                     <input type="date"
                            th:field="*{departureDate}"
                            th:classappend="${#fields.hasErrors('departureDate')} ? 'error-input'">
+
                     <div class="form-error"
                          th:if="${#fields.hasErrors('departureDate')}"
-                         th:errors="*{departureDate}">
+                         th:text="${#fields.errors('departureDate')[0]}">
                     </div>
+
                 </div>
 
-                <button class="search-button" type="submit">Tìm chuyến</button>
+                <button class="search-button" type="submit">
+                    Tìm chuyến
+                </button>
 
             </form>
+
         </section>
 
         <section class="result-card">

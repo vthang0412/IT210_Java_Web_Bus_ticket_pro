@@ -42,7 +42,7 @@ public class SearchController {
     }
 
     // RESULT SEARCH
-    @GetMapping("/search")
+    @PostMapping("/search")
     public String searchResult(
             @Valid @ModelAttribute("searchRequest") SearchTripRequest request,
             BindingResult result,
@@ -51,17 +51,38 @@ public class SearchController {
 
         model.addAttribute("locations", locationRepository.findAll());
 
+        if (request.getFromId() != null
+                && request.getToId() != null
+                && request.getFromId().equals(request.getToId())) {
+
+            result.rejectValue(
+                    "toId",
+                    "route.invalid",
+                    "Điểm đi và điểm đến không được trùng nhau"
+            );
+        }
+
         List<Trip> trips = List.of();
 
         if (result.hasErrors()) {
+
             model.addAttribute("trips", trips);
+
             return "index";
         }
 
-        LocalDateTime start = request.getDepartureDate().atStartOfDay();
-        LocalDateTime end = request.getDepartureDate().atTime(23, 59, 59);
+        LocalDateTime start =
+                request.getDepartureDate().atStartOfDay();
 
-        trips = tripRepository.searchTrips(request.getFromId(), request.getToId(), start, end);
+        LocalDateTime end =
+                request.getDepartureDate().atTime(23, 59, 59);
+
+        trips = tripRepository.searchTrips(
+                request.getFromId(),
+                request.getToId(),
+                start,
+                end
+        );
 
         model.addAttribute("trips", trips);
 

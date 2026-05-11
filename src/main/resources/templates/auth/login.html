@@ -8,39 +8,48 @@
 
         <div class="auth-card">
 
+            <!-- LEFT -->
             <div class="auth-left">
                 <h1>Bus Ticket Pro</h1>
                 <p>Đặt vé nhanh chóng - an toàn - tiện lợi</p>
                 <img th:src="@{/images/bus.png}" alt="">
             </div>
 
+            <!-- RIGHT -->
             <div class="auth-right">
 
                 <h2>Đăng nhập</h2>
-                <form method="post"
-                      th:action="@{/login}"
-                      th:object="${loginRequest}">
 
-                    <input type="text"
-                           th:field="*{username}"
-                           placeholder="Username">
+                  <!-- SPRING SECURITY ERROR -->
+                  <p th:if="${param.error}"
+                     style="color:red; font-weight:bold;">
+                      Sai tài khoản hoặc mật khẩu
+                  </p>
 
-                    <p th:if="${#fields.hasErrors('username')}"
-                       th:errors="*{username}"
-                       style="color:red;"></p>
+                  <p th:if="${param.logout}"
+                     style="color:green;">
+                      Đăng xuất thành công
+                  </p>
 
-                    <input type="password"
-                           th:field="*{password}"
-                           placeholder="Password">
+                  <!-- FORM -->
+                  <form method="post"
+                     th:action="@{/do-login}"
+                     onsubmit="return validateLogin()">
 
-                    <p th:if="${#fields.hasErrors('password')}"
-                       th:errors="*{password}"
-                       style="color:red;"></p>
+                      <input type="text"
+                          name="username"
+                          placeholder="Username">
 
-                    <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+                      <p id="userError" class="error"></p>
 
-                    <button type="submit">Đăng nhập</button>
-                </form>
+                      <input type="password"
+                          name="password"
+                          placeholder="Password">
+
+                      <p id="passError" class="error"></p>
+
+                      <button type="submit">Đăng nhập</button>
+                  </form>
 
                 <div class="auth-link">
                     Chưa có tài khoản?
@@ -54,5 +63,43 @@
     </div>
 
 </div>
+
+<!-- CSS -->
+<style>
+    .error {
+        color: red;
+        font-size: 13px;
+        margin: 5px 0;
+    }
+</style>
+
+<!-- JS VALIDATE -->
+<script>
+    function validateLogin() {
+
+        const username = document.querySelector('input[name="username"]');
+        const password = document.querySelector('input[name="password"]');
+
+        const userError = document.getElementById("userError");
+        const passError = document.getElementById("passError");
+
+        let ok = true;
+
+        userError.innerText = "";
+        passError.innerText = "";
+
+        if (username.value.trim() === "") {
+            userError.innerText = "Bạn chưa nhập username";
+            ok = false;
+        }
+
+        if (password.value.trim() === "") {
+            passError.innerText = "Bạn chưa nhập password";
+            ok = false;
+        }
+
+        return ok;
+    }
+</script>
 
 </html>

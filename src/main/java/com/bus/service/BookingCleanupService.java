@@ -34,7 +34,7 @@ public class BookingCleanupService {
         );
 
         if (tickets.isEmpty()) {
-            log.debug("No expired pending tickets before {}", expiredBefore);
+            log.debug("Không có vé đang chờ xử lý hết hạn trước đây {}", expiredBefore);
             return;
         }
 
@@ -45,6 +45,6 @@ public class BookingCleanupService {
             ticketRepository.save(ticket);
         }
 
-        log.info("Cancelled {} expired pending ticket(s) before {}", tickets.size(), expiredBefore);
+        log.info("Vé {} hết hạn đang chờ xử lý đã bị hủy trước đó {}", tickets.size(), expiredBefore);
     }
 }

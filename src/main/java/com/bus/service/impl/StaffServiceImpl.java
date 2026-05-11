@@ -25,10 +25,10 @@ public class StaffServiceImpl implements StaffService {
 
         Ticket ticket = ticketRepository
                 .lockTicket(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy vé"));
 
         if (ticket.getStatus() != TicketStatus.PENDING) {
-            throw new RuntimeException("Only pending tickets can be approved");
+            throw new RuntimeException("Chỉ những vé đang chờ xử lý mới được chấp thuận");
         }
 
         ticket.setStatus(
@@ -52,7 +52,7 @@ public class StaffServiceImpl implements StaffService {
 
         Ticket ticket = ticketRepository
                 .lockTicket(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy vé"));
 
         if (ticket.getStatus() == TicketStatus.CANCELLED) {
             return;
